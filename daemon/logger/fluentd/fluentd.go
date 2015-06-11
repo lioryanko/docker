@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/daemon/logger"
@@ -128,6 +129,6 @@ func (s *Fluentd) IsReadable() bool {
 	return false
 }
 
-func (s *Fluentd) GetReader() (io.Reader, error) {
+func (s *Fluentd) GetReader(int, time.Time) (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }

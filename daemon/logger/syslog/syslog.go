@@ -12,6 +12,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/daemon/logger"
@@ -103,7 +104,7 @@ func (s *Syslog) IsReadable() bool {
 	return false
 }
 
-func (s *Syslog) GetReader() (io.Reader, error) {
+func (s *Syslog) GetReader(int, time.Time) (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }
 

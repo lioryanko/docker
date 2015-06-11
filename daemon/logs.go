@@ -1,12 +1,10 @@
 package daemon
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
-	"os"
 	"strconv"
 	"syscall"
 	"time"
@@ -14,7 +12,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/pkg/jsonlog"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/docker/docker/pkg/tailfile"
 	"github.com/docker/docker/pkg/timeutils"
 )
 
@@ -64,33 +61,19 @@ func (daemon *Daemon) ContainerLogs(name string, config *ContainerLogsConfig) er
 		return fmt.Errorf("\"logs\" endpoint is not supported for \"%s\" logging driver", logDriver.Name())
 	}
 
-	cLog, err := logDriver.GetReader()
+	if config.Tail != "all" {
+		var err error
+		lines, err = strconv.Atoi(config.Tail)
+		if err != nil {
+			logrus.Errorf("Failed to parse tail %s, error: %v, show all logs", config.Tail, err)
+			lines = -1
+		}
+	}
+	cLog, err := logDriver.GetReader(lines, config.Since)
 	if err != nil {
 		logrus.Errorf("Error reading logs: %s", err)
 	} else {
-		if config.Tail != "all" {
-			var err error
-			lines, err = strconv.Atoi(config.Tail)
-			if err != nil {
-				logrus.Errorf("Failed to parse tail %s, error: %v, show all logs", config.Tail, err)
-				lines = -1
-			}
-		}
-
 		if lines != 0 {
-			if lines > 0 {
-				f := cLog.(*os.File)
-				ls, err := tailfile.TailFile(f, lines)
-				if err != nil {
-					return err
-				}
-				tmp := bytes.NewBuffer([]byte{})
-				for _, l := range ls {
-					fmt.Fprintf(tmp, "%s\n", l)
-				}
-				f.Close()
-				cLog = tmp
-			}
 			dec := json.NewDecoder(cLog)
 			l := &jsonlog.JSONLog{}
 			for {

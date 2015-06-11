@@ -21,7 +21,7 @@ func (l *TestLoggerJSON) Name() string { return "json" }
 
 func (l *TestLoggerJSON) IsReadable() bool { return false }
 
-func (l *TestLoggerJSON) GetReader() (io.Reader, error) {
+func (l *TestLoggerJSON) GetReader(int, time.Time) (io.Reader, error) {
 	return nil, errors.New("not used in the test")
 }
 

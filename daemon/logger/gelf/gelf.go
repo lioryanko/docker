@@ -113,7 +113,7 @@ func (s *GelfLogger) Log(msg *logger.Message) error {
 	return nil
 }
 
-func (s *GelfLogger) GetReader() (io.Reader, error) {
+func (s *GelfLogger) GetReader(lines int, since time.Time) (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }
 

@@ -5,6 +5,7 @@ package journald
 import (
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/coreos/go-systemd/journal"
@@ -59,6 +60,6 @@ func (s *Journald) IsReadable() bool {
 	return false
 }
 
-func (s *Journald) GetReader() (io.Reader, error) {
+func (s *Journald) GetReader(lines int, since time.Time) (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }

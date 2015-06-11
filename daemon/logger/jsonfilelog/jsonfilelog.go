@@ -2,13 +2,16 @@ package jsonfilelog
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/daemon/logger"
 	"github.com/docker/docker/pkg/jsonlog"
+	"github.com/docker/docker/pkg/tailfile"
 	"github.com/docker/docker/pkg/timeutils"
 )
 
@@ -68,8 +71,25 @@ func (l *JSONFileLogger) Log(msg *logger.Message) error {
 	return nil
 }
 
-func (l *JSONFileLogger) GetReader() (io.Reader, error) {
-	return os.Open(l.ctx.LogPath)
+func (l *JSONFileLogger) GetReader(lines int, since time.Time) (io.Reader, error) {
+	var reader io.Reader
+	cLog, err := os.Open(l.ctx.LogPath)
+	if err == nil {
+		reader = cLog
+		if lines > 0 {
+			ls, err := tailfile.TailFile(cLog, lines)
+			defer cLog.Close()
+			if err != nil {
+				return nil, err
+			}
+			tmp := bytes.NewBuffer([]byte{})
+			for _, l := range ls {
+				fmt.Fprintf(tmp, "%s\n", l)
+			}
+			reader = tmp
+		}
+	}
+	return reader, err
 }
 
 func (l *JSONFileLogger) LogPath() string {

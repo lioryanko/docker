@@ -865,7 +865,7 @@ func (c *Container) AttachWithLogs(stdin io.ReadCloser, stdout, stderr io.Writer
 			logrus.Errorf("Error reading logs: %s", err)
 		} else if !logDriver.IsReadable() {
 			logrus.Errorf("Reading logs not implemented for driver %s", logDriver.Name())
-		} else if cLog, err := logDriver.GetReader(); err != nil {
+		} else if cLog, err := logDriver.GetReader(-1, time.Time{}); err != nil {
 			logrus.Errorf("Error reading logs: %s", err)
 		} else {
 			dec := json.NewDecoder(cLog)

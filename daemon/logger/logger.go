@@ -22,5 +22,5 @@ type Logger interface {
 	Name() string
 	Close() error
 	IsReadable() bool
-	GetReader() (io.Reader, error)
+	GetReader(lines int, since time.Time) (io.Reader, error)
 }
