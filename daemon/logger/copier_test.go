@@ -19,6 +19,8 @@ func (l *TestLoggerJSON) Close() error { return nil }
 
 func (l *TestLoggerJSON) Name() string { return "json" }
 
+func (l *TestLoggerJSON) IsReadable() bool { return false }
+
 func (l *TestLoggerJSON) GetReader() (io.Reader, error) {
 	return nil, errors.New("not used in the test")
 }

@@ -99,6 +99,10 @@ func (s *Syslog) Name() string {
 	return name
 }
 
+func (s *Syslog) IsReadable() bool {
+	return false
+}
+
 func (s *Syslog) GetReader() (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }

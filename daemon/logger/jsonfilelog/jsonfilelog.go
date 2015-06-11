@@ -85,3 +85,8 @@ func (l *JSONFileLogger) Close() error {
 func (l *JSONFileLogger) Name() string {
 	return Name
 }
+
+// IsReadable returns an indication of whether or not the logs can be read
+func (l *JSONFileLogger) IsReadable() bool {
+	return true
+}

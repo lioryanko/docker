@@ -124,6 +124,10 @@ func (f *Fluentd) Name() string {
 	return name
 }
 
+func (s *Fluentd) IsReadable() bool {
+	return false
+}
+
 func (s *Fluentd) GetReader() (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }

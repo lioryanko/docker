@@ -861,12 +861,12 @@ func (c *Container) AttachWithLogs(stdin io.ReadCloser, stdout, stderr io.Writer
 
 	if logs {
 		logDriver, err := c.getLogger()
-		cLog, err := logDriver.GetReader()
-
 		if err != nil {
 			logrus.Errorf("Error reading logs: %s", err)
-		} else if c.LogDriverType() != jsonfilelog.Name {
-			logrus.Errorf("Reading logs not implemented for driver %s", c.LogDriverType())
+		} else if !logDriver.IsReadable() {
+			logrus.Errorf("Reading logs not implemented for driver %s", logDriver.Name())
+		} else if cLog, err := logDriver.GetReader(); err != nil {
+			logrus.Errorf("Error reading logs: %s", err)
 		} else {
 			dec := json.NewDecoder(cLog)
 			for {
@@ -884,6 +884,10 @@ func (c *Container) AttachWithLogs(stdin io.ReadCloser, stdout, stderr io.Writer
 				if l.Stream == "stderr" && stderr != nil {
 					io.WriteString(stderr, l.Log)
 				}
+			}
+			if c, ok := cLog.(io.Closer); ok {
+				// the reader can be closed, so it needs to be closed
+				c.Close()
 			}
 		}
 	}

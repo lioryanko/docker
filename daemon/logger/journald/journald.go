@@ -55,6 +55,10 @@ func (s *Journald) Name() string {
 	return name
 }
 
+func (s *Journald) IsReadable() bool {
+	return false
+}
+
 func (s *Journald) GetReader() (io.Reader, error) {
 	return nil, logger.ReadLogsNotSupported
 }

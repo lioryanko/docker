@@ -21,5 +21,6 @@ type Logger interface {
 	Log(*Message) error
 	Name() string
 	Close() error
+	IsReadable() bool
 	GetReader() (io.Reader, error)
 }

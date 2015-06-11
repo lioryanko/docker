@@ -125,6 +125,8 @@ func (s *GelfLogger) Name() string {
 	return name
 }
 
+func (s *GelfLogger) IsReadable() bool { return false }
+
 func parseAddress(address string) (string, error) {
 	if urlutil.IsTransportURL(address) {
 		url, err := url.Parse(address)

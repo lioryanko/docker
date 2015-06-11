@@ -222,7 +222,7 @@ _docker_docker() {
 			return
 			;;
 		--log-driver)
-			COMPREPLY=( $( compgen -W "json-file syslog none" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "json-file syslog journald none" -- "$cur" ) )
 			return
 			;;
 		--log-level|-l)
@@ -909,7 +909,7 @@ _docker_run() {
 			return
 			;;
 		--log-driver)
-			COMPREPLY=( $( compgen -W "json-file syslog none" -- "$cur") )
+			COMPREPLY=( $( compgen -W "json-file syslog journald none" -- "$cur") )
 			return
 			;;
 		--net)

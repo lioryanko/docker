@@ -38,8 +38,8 @@ func (cli *DockerCli) CmdLogs(args ...string) error {
 		return err
 	}
 
-	if logType := c.HostConfig.LogConfig.Type; logType != "json-file" {
-		return fmt.Errorf("\"logs\" command is supported only for \"json-file\" logging driver (got: %s)", logType)
+	if logType := c.HostConfig.LogConfig.Type; logType != "json-file" && logType != "journald" {
+		return fmt.Errorf("\"logs\" command is supported only for \"json-file\" and \"journald\" logging drivers (container is using \"%s\")", logType)
 	}
 
 	v := url.Values{}

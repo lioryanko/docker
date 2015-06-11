@@ -636,7 +636,7 @@ func (s *Server) getContainersLogs(version version.Version, w http.ResponseWrite
 	}
 
 	if err := s.daemon.ContainerLogs(vars["name"], logsConfig); err != nil {
-		fmt.Fprintf(w, "Error running logs job: %s\n", err)
+		fmt.Fprintf(logsConfig.OutStream, "Error running logs job: %s\n", err)
 	}
 
 	return nil

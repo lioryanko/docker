@@ -23,7 +23,7 @@ container's logging driver. The following options are supported:
 | `gelf`      | Graylog Extended Log Format (GELF) logging driver for Docker. Writes log messages to a GELF endpoint likeGraylog or Logstash. |
 | `fluentd`   | Fluentd logging driver for Docker. Writes log messages to `fluentd` (forward input).                                          |
 
-The `docker logs`command is available only for the `json-file` logging driver.  
+The `docker logs`command is available only for the `json-file` and `journald` logging drivers.
 
 ### The syslog options
 

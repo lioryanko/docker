@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/docker/docker/daemon/logger/jsonfilelog"
 	"github.com/docker/docker/pkg/jsonlog"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/docker/pkg/tailfile"
@@ -58,16 +57,17 @@ func (daemon *Daemon) ContainerLogs(name string, config *ContainerLogsConfig) er
 	} else {
 		errStream = outStream
 	}
+	config.OutStream = outStream
 
-	if container.LogDriverType() != jsonfilelog.Name {
-		return fmt.Errorf("\"logs\" endpoint is supported only for \"json-file\" logging driver")
-	}
 	logDriver, err := container.getLogger()
+	if !logDriver.IsReadable() {
+		return fmt.Errorf("\"logs\" endpoint is not supported for \"%s\" logging driver", logDriver.Name())
+	}
+
 	cLog, err := logDriver.GetReader()
 	if err != nil {
 		logrus.Errorf("Error reading logs: %s", err)
 	} else {
-		// json-file driver
 		if config.Tail != "all" {
 			var err error
 			lines, err = strconv.Atoi(config.Tail)
@@ -88,9 +88,9 @@ func (daemon *Daemon) ContainerLogs(name string, config *ContainerLogsConfig) er
 				for _, l := range ls {
 					fmt.Fprintf(tmp, "%s\n", l)
 				}
+				f.Close()
 				cLog = tmp
 			}
-
 			dec := json.NewDecoder(cLog)
 			l := &jsonlog.JSONLog{}
 			for {
@@ -116,6 +116,10 @@ func (daemon *Daemon) ContainerLogs(name string, config *ContainerLogsConfig) er
 					io.WriteString(errStream, logLine)
 				}
 			}
+		}
+		if c, ok := cLog.(io.Closer); ok {
+			// the reader can be closed, so it needs to be closed
+			c.Close()
 		}
 	}
 
