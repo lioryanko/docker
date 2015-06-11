@@ -25,6 +25,7 @@ Packager: Docker <support@docker.com>
 # only require systemd on those systems
 %if 0%{?is_systemd}
 BuildRequires: pkgconfig(systemd)
+BuildRequires: pkgconfig(libsystemd-journal)
 Requires: systemd-units
 %else
 Requires(post): chkconfig

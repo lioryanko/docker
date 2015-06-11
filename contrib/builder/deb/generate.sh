@@ -55,6 +55,7 @@ for version in "${versions[@]}"; do
 		libapparmor-dev # for "sys/apparmor.h"
 		libdevmapper-dev # for "libdevmapper.h"
 		libsqlite3-dev # for "sqlite3.h"
+		libsystemd-journal-dev # for "sd-journal.h" and libraries
 	)
 
 	if [ "$suite" = 'precise' ]; then
